@@ -2,11 +2,13 @@
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.springaicommunity/spring-ai-starter-model-watsonx-ai.svg?label=Maven%20Central)](https://central.sonatype.com/search?namespace=io.github.springaicommunity&name=spring-ai-starter-model-watsonx-ai)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Build Status](https://github.com/spring-ai-community/spring-ai-watsonx-ai/workflows/CI/badge.svg)](https://github.com/spring-ai-community/spring-ai-watsonx-ai/actions)
+[![Java Version](https://img.shields.io/badge/Java-17%2B-blue.svg)](https://adoptium.net/temurin/releases/)
+[![Build Status](https://github.com/spring-ai-community/spring-ai-watsonx-ai/workflows/PR%20Check/badge.svg)](https://github.com/spring-ai-community/spring-ai-watsonx-ai/actions/workflows/pr-check.yml)
+[![Documentation](https://github.com/spring-ai-community/spring-ai-watsonx-ai/workflows/Deploy%20watsonx.ai%20Documentation/badge.svg)](https://github.com/spring-ai-community/spring-ai-watsonx-ai/actions/workflows/publish-docs.yml)
 
-> **⚠️ Development Status**: This project is currently in active development and is not yet ready for production use. Features and APIs may change without notice.
+> **🧪 Testing Status**: Chat and Embeddings features are currently in testing phase using the watsonx.ai SaaS platform. Features and APIs may change without notice.
 
-Spring AI Watsonx.ai provides Spring AI integration with IBM's Watsonx.ai platform, enabling developers to leverage powerful foundation models for chat, embeddings, and text extraction capabilities in their applications.
+Spring AI Watsonx.ai provides Spring AI integration with IBM's Watsonx.ai platform, enabling developers to leverage powerful foundation models for chat, and embeddings in their applications.
 
 ## Overview
 
@@ -14,7 +16,7 @@ IBM Watsonx.ai is an enterprise-ready AI platform that provides access to variou
 
 - **Chat Models**: IBM Granite, Meta Llama, Mistral AI, and other conversational AI models
 - **Embedding Models**: IBM's embedding models for semantic search and similarity analysis
-- **Text Extraction**: AI-powered document processing and structured data extraction
+
 
 This integration brings these capabilities to Spring Boot applications through familiar Spring AI abstractions.
 
@@ -22,7 +24,6 @@ This integration brings these capabilities to Spring Boot applications through f
 
 - **Chat Models**: Support for multiple foundation models with streaming capabilities
 - **Embedding Models**: Generate embeddings for semantic search and similarity analysis
-- **Text Extraction**: Extract structured data from documents using AI
 - **Spring Boot Auto-configuration**: Zero-configuration setup with Spring Boot
 - **Flexible Configuration**: Runtime parameter overrides and multiple model configurations
 - **Function Calling**: Connect LLMs with external tools and APIs
@@ -139,7 +140,6 @@ spring-ai-watsonx-ai/
 ├── watsonx-ai-core/
 │   ├── WatsonxAiChatModel       # Chat model implementation
 │   ├── WatsonxAiEmbeddingModel  # Embedding model implementation
-│   ├── WatsonxAiTextExtraction  # Text extraction implementation
 │   └── WatsonxAiAuthentication  # IBM Cloud IAM authentication
 ├── spring-ai-autoconfigure-model-watsonx-ai/
 │   └── Auto-configuration classes
@@ -180,7 +180,10 @@ spring:
         embedding:
           options:
             model: ibm/slate-125m-english-rtrvr
-            truncate-input-tokens: true
+            parameters:
+                truncate-input-tokens: true
+                return-options:
+                    input-text: false
 ```
 
 ## Advanced Features
@@ -284,7 +287,6 @@ For comprehensive documentation, examples, and API reference, visit:
 - [Getting Started Guide](docs/src/main/antora/modules/ROOT/pages/index.adoc)
 - [Chat Models](docs/src/main/antora/modules/ROOT/pages/chat/index.adoc)
 - [Embedding Models](docs/src/main/antora/modules/ROOT/pages/embeddings/index.adoc)
-- [Text Extraction](docs/src/main/antora/modules/ROOT/pages/text-extraction/index.adoc)
 - [Configuration](docs/src/main/antora/modules/ROOT/pages/configuration.adoc)
 - [Examples](docs/src/main/antora/modules/ROOT/pages/examples.adoc)
 

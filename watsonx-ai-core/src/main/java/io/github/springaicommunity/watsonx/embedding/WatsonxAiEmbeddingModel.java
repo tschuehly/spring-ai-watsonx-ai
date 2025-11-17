@@ -69,7 +69,7 @@ public class WatsonxAiEmbeddingModel implements EmbeddingModel {
           WatsonxAiEmbeddingRequest watsonxRequest =
               WatsonxAiEmbeddingRequest.builder()
                   .inputs(request.getInstructions())
-                  .modelId(options.getModel())
+                  .model(options.getModel())
                   .parameters(createEmbeddingParameters(options))
                   .build();
 
@@ -84,18 +84,6 @@ public class WatsonxAiEmbeddingModel implements EmbeddingModel {
   public float[] embed(Document document) {
     Assert.notNull(document, "Document must not be null");
     return embed(document.getText());
-  }
-
-  @Override
-  public float[] embed(String text) {
-    Assert.hasText(text, "Text must not be null or empty");
-
-    EmbeddingRequest request = new EmbeddingRequest(List.of(text), null);
-    EmbeddingResponse response = call(request);
-
-    return response.getResults().isEmpty()
-        ? new float[0]
-        : response.getResults().get(0).getOutput();
   }
 
   private WatsonxAiEmbeddingOptions mergeOptions(EmbeddingOptions runtimeOptions) {
@@ -116,9 +104,6 @@ public class WatsonxAiEmbeddingModel implements EmbeddingModel {
         if (watsonxOptions.getParameters() != null) {
           mergedOptions.setParameters(watsonxOptions.getParameters());
         }
-        if (watsonxOptions.getTruncateInputTokens() != null) {
-          mergedOptions.setTruncateInputTokens(watsonxOptions.getTruncateInputTokens());
-        }
       }
     }
 
@@ -127,19 +112,19 @@ public class WatsonxAiEmbeddingModel implements EmbeddingModel {
 
   private WatsonxAiEmbeddingRequest.EmbeddingParameters createEmbeddingParameters(
       WatsonxAiEmbeddingOptions options) {
-    if (options.getTruncateInputTokens() == null && options.getParameters() == null) {
+    if (options.getParameters() == null) {
       return null;
     }
 
     WatsonxAiEmbeddingRequest.EmbeddingReturnOptions returnOptions = null;
-    if (options.getParameters() != null && options.getParameters().get("input_text") != null) {
+    if (options.getParameters() != null && options.getParameters().returnOptions() != null) {
       returnOptions =
           new WatsonxAiEmbeddingRequest.EmbeddingReturnOptions(
-              (Boolean) options.getParameters().get("input_text"));
+              (Boolean) options.getParameters().returnOptions().inputText());
     }
 
     return new WatsonxAiEmbeddingRequest.EmbeddingParameters(
-        options.getTruncateInputTokens(), returnOptions);
+        options.getParameters().truncateInputTokens(), returnOptions);
   }
 
   private EmbeddingResponse toEmbeddingResponse(WatsonxAiEmbeddingResponse watsonxResponse) {
@@ -166,7 +151,7 @@ public class WatsonxAiEmbeddingModel implements EmbeddingModel {
 
     EmbeddingResponseMetadata metadata =
         new EmbeddingResponseMetadata(
-            watsonxResponse.modelId() != null ? watsonxResponse.modelId() : "unknown", null);
+            watsonxResponse.model() != null ? watsonxResponse.model() : "unknown", null);
 
     return new EmbeddingResponse(embeddings, metadata);
   }

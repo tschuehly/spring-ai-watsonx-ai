@@ -17,10 +17,12 @@
 package io.github.springaicommunity.watsonx.embedding;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.springaicommunity.watsonx.embedding.WatsonxAiEmbeddingRequest.EmbeddingParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.embedding.EmbeddingOptions;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
  * Options for watsonx Embedding API. Configuration options that can be passed to control the
@@ -34,16 +36,18 @@ public class WatsonxAiEmbeddingOptions implements EmbeddingOptions {
 
   private static final Logger logger = LoggerFactory.getLogger(WatsonxAiEmbeddingOptions.class);
 
+  @JsonProperty("model_id")
   private String model;
-  private Map<String, Object> parameters;
-  private Integer truncateInputTokens;
+
+  @JsonProperty("parameters")
+  @NestedConfigurationProperty
+  private EmbeddingParameters parameters;
 
   public WatsonxAiEmbeddingOptions() {}
 
   private WatsonxAiEmbeddingOptions(Builder builder) {
     this.model = builder.model;
     this.parameters = builder.parameters;
-    this.truncateInputTokens = builder.truncateInputTokens;
   }
 
   @Override
@@ -65,20 +69,12 @@ public class WatsonxAiEmbeddingOptions implements EmbeddingOptions {
     logger.warn("Watson AI API doesn't support dimensions parameter");
   }
 
-  public Map<String, Object> getParameters() {
+  public EmbeddingParameters getParameters() {
     return parameters;
   }
 
-  public void setParameters(Map<String, Object> parameters) {
+  public void setParameters(EmbeddingParameters parameters) {
     this.parameters = parameters;
-  }
-
-  public Integer getTruncateInputTokens() {
-    return truncateInputTokens;
-  }
-
-  public void setTruncateInputTokens(Integer truncateInputTokens) {
-    this.truncateInputTokens = truncateInputTokens;
   }
 
   public String getEncodingFormat() {
@@ -95,16 +91,12 @@ public class WatsonxAiEmbeddingOptions implements EmbeddingOptions {
   }
 
   public Builder toBuilder() {
-    return new Builder()
-        .model(this.model)
-        .parameters(this.parameters)
-        .truncateInputTokens(this.truncateInputTokens);
+    return new Builder().model(this.model).parameters(this.parameters);
   }
 
   public static class Builder {
     private String model;
-    private Map<String, Object> parameters;
-    private Integer truncateInputTokens;
+    private EmbeddingParameters parameters;
 
     private Builder() {}
 
@@ -113,13 +105,8 @@ public class WatsonxAiEmbeddingOptions implements EmbeddingOptions {
       return this;
     }
 
-    public Builder parameters(Map<String, Object> parameters) {
+    public Builder parameters(EmbeddingParameters parameters) {
       this.parameters = parameters;
-      return this;
-    }
-
-    public Builder truncateInputTokens(Integer truncateInputTokens) {
-      this.truncateInputTokens = truncateInputTokens;
       return this;
     }
 
